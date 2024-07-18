@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "version": "1.0.0",
+    "name": "extension-vite",
+    "action":{
+        "default_popup":"index.html"
+    },
+    "permissions":[
+        "scripting",
+        "storage"
+    ],
+    "host_permissions":[
+        "http://*/*",
+        "https://*/*"
+    ]
+}
