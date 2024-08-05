@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import RevertIcon from './icons/revert-icon.svg';
+import BackgroundIcon from './icons/background-icon.svg';
+import TextIcon from './icons/text-icon.svg';
 
 function App() {
   const [color, setColor] = useState('');
   const [classToSearch, setClassToSearch] = useState('');
   const [originalColor, setOriginalColor] = useState('');
+  const [hover, setHover] = useState(false);
+  const [code, setCode] = useState(false);
+
 
   useEffect(() => {
     //recover temp data
@@ -47,9 +53,9 @@ function App() {
     localStorage.setItem('classToSearch', className);
   }
 
-  // change background color
+  //change background color
   const changeBackground = async (className: string, color: string): Promise<void> => {
-    let [tab] = await chrome.tabs.query({ active: true }); // --> set focus nav tab
+    let [tab] = await chrome.tabs.query({ active: true });
     chrome.scripting.executeScript({
       target: { tabId: tab.id! },
       args: [className, color],
@@ -66,7 +72,7 @@ function App() {
 
   }
 
-  // restore original color
+  //restore original color
   const resetColors = async (className: string): Promise<void> => {
     let [tab] = await chrome.tabs.query({ active: true });
     chrome.scripting.executeScript({
@@ -100,17 +106,15 @@ function App() {
               colorFinded = computedStyle.color;
             } else {
               colorFinded = computedStyle.backgroundColor;
-              console.log("colorFinded tiene un valor");
             }
           }
         });
-        console.log(colorFinded)
         return colorFinded;
       }
     });
     const originalColor = result[0].result ?? "";
 
-    // rgb to hex 
+    //rgb to hex 
     const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
     const match = rgbRegex.exec(originalColor);
     let hexColor = "";
@@ -130,31 +134,84 @@ function App() {
   return (
     <>
       <div className='content-container'>
-        <h1 className='extension-title'>Color tester</h1>
+        <h1 className='extension-title'>Color Tester</h1>
         <div className='extension-container'>
-          <h1>
-            <input
-              type='text'
-              placeholder='classToSearch'
-              value={classToSearch}
-              onChange={
-                (e) => {
-                  setClassToSearch(e.target.value);
-                  findColor(e.target.value);
-                }
-              }
-            />
-          </h1>
           <input
-            type="color"
-            onChange={(e) => setColor(e.currentTarget.value)}
-            value={color}
+            className='text-input'
+            type='text'
+            placeholder='Ingresar clase a buscar'
+            value={classToSearch}
+            onChange={
+              (e) => {
+                setClassToSearch(e.target.value);
+                findColor(e.target.value);
+              }
+            }
           />
-          <button onClick={() => changeText(classToSearch, color)}>Change text</button>
-          <button onClick={() => changeBackground(classToSearch, color)}>Change background</button>
-          <button onClick={() => resetColors(classToSearch)}>Revertir</button>
-          <div className='originalColor' style={{ backgroundColor: originalColor }} />
-          <p>{originalColor || '#123456'}</p>
+          <div className='test-options'>
+            <div className='color-selector'>
+              <div className='color-selector-title'>
+                <hr />
+                <p>Seleccionar color</p>
+                <hr />
+              </div>
+              <input
+                type="color"
+                onChange={(e) => setColor(e.currentTarget.value)}
+                value={color}
+              />
+            </div>
+            <div className='color-modificator'>
+              <div>
+                <button
+                  onClick={() => resetColors(classToSearch)}
+                ><img src={RevertIcon} />
+                </button>
+                <p>Limpiar</p>
+              </div>
+              <div>
+                <button
+                  onClick={() => changeText(classToSearch, color)}
+                ><img src={TextIcon} />
+                </button>
+                <p>Texto</p>
+              </div>
+              <div>
+                <button
+                  onClick={() => changeBackground(classToSearch, color)}
+                ><img src={BackgroundIcon} />
+                </button>
+                <p>Fondo</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div className='originalColor-container'>
+            <div className='originalColorTitle'>
+              <hr />
+              <p>Color Original</p>
+              <hr />
+            </div>
+            <div>
+              <div
+                className='originalColor'
+                style={{ backgroundColor: originalColor }}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+                onClick={() => {
+                  setCode(true);
+                  navigator.clipboard.writeText(originalColor);
+                  setTimeout(() => setCode(false), 2000);
+                }
+                }
+              />
+              <p className={`copy-color-code ${hover ? 'hover' : ''}`}>Copiar código de color</p>
+              <p className={`copied-color-code ${code ? 'active' : ''}`}>Código copiado</p>
+              <h1>{originalColor || '#FFFFFF'}</h1>
+            </div>
+          </div>
+
         </div>
       </div>
     </>
