@@ -131,6 +131,56 @@ function App() {
 
   }
 
+  //show css classes at hover 
+  const showHoverClasses = async () => {
+    let [tab] = await chrome.tabs.query({ active: true });
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id! },
+      args: [],
+      func: () => {
+        let tooltip = document.createElement('div');
+        tooltip.style.position = 'fixed';
+        tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        tooltip.style.color = 'white';
+        tooltip.style.padding = '5px 10px';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.zIndex = '10000';
+        tooltip.style.pointerEvents = 'none';
+        tooltip.style.display = 'none';
+        document.body.appendChild(tooltip);
+
+        document.addEventListener('mouseover', (event) => {
+
+          const targetElement = event.target as HTMLElement;
+          const classes = targetElement.className;
+
+          document.addEventListener('mousemove', (event) => {
+            tooltip.style.top = `${event.clientY + 10}px`;
+            tooltip.style.left = `${event.clientX + 10}px`;
+          });
+
+          document.addEventListener('mouseout', () => {
+            tooltip.style.display = 'none';
+          });
+
+
+          if (classes) {
+            tooltip.style.display = 'block';
+            tooltip.textContent = `Clases: ${classes}`;
+          } else {
+            tooltip.style.display = 'none';
+          }
+
+        })
+      }
+    });
+
+
+  };
+
+  showHoverClasses();
+
   return (
     <>
       <div className='content-container'>
