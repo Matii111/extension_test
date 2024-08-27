@@ -268,4 +268,12 @@ function App() {
   );
 }
 
+// TODO: Pasar codigo estilo de hover a archivo css
+// TODO: Crear funcion para copiar nombre de la clase
+// TODO: Crear funcion para mostrar colores de root
+// TODO: Crear funcion para mostrar posibles clases,
+//       es decir, que especifique mejor que clase
+//       se esta seleccionando
+// TODO: Refactorizar
+
 export default App;
