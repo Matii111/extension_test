@@ -50,6 +50,19 @@
   cursor: default;
 }
 
+/* SCROLLBAR SETTINGS */
+::-webkit-scrollbar-track {
+  background: #A89B9D;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar {
+  width: 0.2rem;
+}
+
 /* CLASS FINDER */
 
 .text-input {
@@ -236,4 +249,134 @@
 .copied-color-code.active {
   opacity: 1;
   transition: 0.3s all ease-in-out;
+}
+
+/* DROPDOWN MENU */
+.dropdown-button {
+  rotate: 90deg;
+  width: 1rem;
+  height: 1rem;
+  transition: .3s ease-in-out;
+  scroll-behavior: smooth;
+}
+
+.dropdown-active {
+  rotate: 0deg;
+}
+
+.dropdown-content-hidden {
+  width: 0rem;
+  height: 0rem;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  position: absolute;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  transition: .3s ease-in-out;
+}
+
+.dropdown-content-active {
+  width: 9rem;
+  height: 5rem;
+}
+
+.dropdown-content>img {
+  width: 1rem;
+}
+
+.dropdown-content-hidden>.options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: scroll;
+  max-height: 5rem;
+  border-radius: 0%;
+  border-color: transparent;
+  width: 100%;
+}
+
+.options>hr {
+  width: 90%;
+  margin-top: -1rem;
+  border-color: #a89b9d4d !important;
+}
+
+.options-boxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.options-boxes>div>p {
+  padding-left: 0.5rem;
+  font-size: 0.6rem;
+  width: 5rem;
+  text-align: left;
+}
+
+.dropdown-content-hidden>.options>:hover,
+.dropdown-content-hidden>.options>:focus {
+  border-color: transparent;
+  transition: all 0.3 ease-in-out;
+  outline: none;
+}
+
+.dropdown-content-hidden>p {
+  font-size: 0.7rem;
+  color: #CFCFEA;
+  cursor: default;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  height: 34px;
+  margin: 0.8rem;
+  padding-bottom: 1rem;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  height: 1.2rem;
+  width: 2.2rem;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 0.8rem;
+  width: 0.8rem;
+  left: 0.2rem;
+  bottom: 0.2rem;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #2A2C24;
+  ;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #1a1a1a;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
 }
