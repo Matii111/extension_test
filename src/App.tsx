@@ -3,6 +3,18 @@ import './App.css';
 import RevertIcon from './icons/revert-icon.svg';
 import BackgroundIcon from './icons/background-icon.svg';
 import TextIcon from './icons/text-icon.svg';
+import Dropdown from './icons/dropdown-arrow.svg';
+
+const handleCheckboxChange = (
+  event: React.ChangeEvent<HTMLInputElement>,
+  setOption: React.Dispatch<React.SetStateAction<boolean>>,
+  storageKey: string
+) => {
+  const isChecked = event.target.checked;
+  setOption(isChecked);
+  localStorage.setItem(storageKey, JSON.stringify(isChecked));
+};
+
 
 function App() {
   const [color, setColor] = useState('');
@@ -10,12 +22,18 @@ function App() {
   const [originalColor, setOriginalColor] = useState('');
   const [hover, setHover] = useState(false);
   const [code, setCode] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
+  const [option1Checked, setIsOption1Checked] = useState(false);
+  const [option2Checked, setIsOption2Checked] = useState(false);
 
   useEffect(() => {
     //recover temp data
     const storedColor = localStorage.getItem('color');
     const storedClassToSearch = localStorage.getItem('classToSearch');
     const storedOriginalColor = localStorage.getItem('originalColor');
+
+    const storedOption1 = localStorage.getItem('option1Stored');
+    const storedOption2 = localStorage.getItem('option2Stored');
 
     if (storedColor) {
       setColor(storedColor);
@@ -26,7 +44,21 @@ function App() {
     if (storedOriginalColor) {
       setOriginalColor(storedOriginalColor);
     }
-  }, []);
+    if (storedOption1) {
+      setIsOption1Checked(JSON.parse(storedOption1));
+    }
+    if (storedOption2) {
+      setIsOption2Checked(JSON.parse(storedOption2));
+    }
+    if (option1Checked) {
+      showHoverClasses(option2Checked);
+    } else {
+      removeHoverClasses();
+    }
+    return () => {
+      removeHoverClasses();
+    };
+  }, [option1Checked, option2Checked]);
 
   // change text color
   const changeText = async (className: string, color: string): Promise<void> => {
@@ -131,12 +163,12 @@ function App() {
   }
 
   //show css classes at hover 
-  const showHoverClasses = async () => {
+  const showHoverClasses = async (option2Checked: Boolean) => {
     let [tab] = await chrome.tabs.query({ active: true });
     chrome.scripting.executeScript({
       target: { tabId: tab.id! },
-      args: [],
-      func: () => {
+      args: [option2Checked],
+      func: (option2Checked) => {
         let tooltip = document.createElement('tooltip');
         //tooltip styles
         tooltip.style.position = 'fixed';
@@ -176,10 +208,16 @@ function App() {
           if (hierarchy) {
             tooltip.style.display = 'block';
             tooltip.textContent = `Clase: ${hierarchy}`;
-            document.addEventListener('click', function () {
-              navigator.clipboard.writeText(`${hierarchy}`);
-              tooltip.textContent = `Clase copiada`;
-            })
+            //function to copy class
+            {
+              option2Checked ? (
+                document.addEventListener('click', function () {
+                  navigator.clipboard.writeText(`${hierarchy}`);
+                  tooltip.textContent = `Clase copiada`;
+                })
+              ) : null
+            }
+
           } else {
             tooltip.style.display = 'none';
           }
@@ -189,9 +227,22 @@ function App() {
     });
   };
 
-  showHoverClasses();
+  const removeHoverClasses = async () => {
+    let [tab] = await chrome.tabs.query({ active: true });
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id! },
+      args: [],
+      func: () => {
+        const tooltip = document.querySelector('tooltip');
+        if (tooltip) {
+          tooltip.remove();
+        }
+      }
+    });
+  };
 
   return (
+
     <>
       <div className='content-container'>
         <h1 className='extension-title'>Color Tester</h1>
@@ -243,10 +294,58 @@ function App() {
                 </button>
                 <p>Fondo</p>
               </div>
+              <div>
+                <button
+                  onClick={() => setDropdown((prevState) => !prevState)}
+                ><img
+                    src={Dropdown}
+                    className={`dropdown-button ${dropdown ? 'dropdown-active' : ''}`} />
+                </button>
+                <div className={`dropdown-content-hidden  ${dropdown ? 'dropdown-content-active' : ''}`}>
+
+                  <div className='options'>
+                    <div className='options-boxes'>
+                      <div>
+                        <p>
+                          Hover de clases
+                        </p>
+                      </div>
+                      <div>
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            checked={option1Checked}
+                            onChange={(e) => handleCheckboxChange(e, setIsOption1Checked, 'option1Stored')}
+                          />
+                          <span className="slider" />
+                        </label>
+
+                      </div>
+                    </div>
+                    <hr />
+                    <div className='options-boxes'>
+                      <div>
+                        <p>
+                          Copiar clase al clickear
+                        </p>
+                      </div>
+                      <div>
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            checked={option2Checked}
+                            onChange={(e) => handleCheckboxChange(e, setIsOption2Checked, 'option2Stored')}
+                          />
+                          <span className="slider" />
+                        </label>
+                      </div>
+                    </div>
+                    <hr />
+                  </div>
+                </div>
+              </div>
             </div>
-
           </div>
-
           <div className='originalColor-container'>
             <div className='originalColorTitle'>
               <hr />
@@ -273,7 +372,7 @@ function App() {
           </div>
 
         </div>
-      </div>
+      </div >
     </>
   );
 }
