@@ -30,6 +30,7 @@ function App() {
   const [dropdown, setDropdown] = useState(false);
   const [option1Checked, setIsOption1Checked] = useState(false);
   const [option2Checked, setIsOption2Checked] = useState(false);
+  const ColorsList = parseColors(originalColor);
 
   useEffect(() => {
     // temp files
@@ -63,6 +64,22 @@ function App() {
       RemoveHover();
     };
   }, [option1Checked, option2Checked]);
+
+  //function to filter hex colors from classes
+  function parseColors(jsonString: string): string[] {
+    try {
+      const colorObject = JSON.parse(jsonString) as { [key: string]: string };
+      const colors = new Set(
+        Object.values(colorObject).filter(color =>
+          color.startsWith('#') && color.length === 7
+        )
+      );
+      return Array.from(colors);
+    } catch (e) {
+      console.error('ERROR=', e);
+      return [];
+    }
+  }
 
   return (
     <>
@@ -175,20 +192,28 @@ function App() {
               <hr />
             </div>
             <div>
-              <div
-                className='originalColor'
-                style={{ backgroundColor: originalColor }}
-                onMouseEnter={() => setHover(true)}
-                onMouseLeave={() => setHover(false)}
-                onClick={() => {
-                  setCode(true);
-                  navigator.clipboard.writeText(originalColor);
-                  setTimeout(() => setCode(false), 2000);
-                }}
-              />
-              <p className={`copy-color-code ${hover ? 'hover' : ''}`}>Copiar código de color</p>
-              <p className={`copied-color-code ${code ? 'active' : ''}`}>Código copiado</p>
-              <h1>{originalColor || '#FFFFFF'}</h1>
+              {ColorsList.length > 0 ? (
+                ColorsList.map((color, index) => (
+                  <div key={index} className='color-box'>
+                    <div
+                      className='originalColor'
+                      style={{ backgroundColor: color }}
+                      onMouseEnter={() => setHover(true)}
+                      onMouseLeave={() => setHover(false)}
+                      onClick={() => {
+                        setCode(true);
+                        navigator.clipboard.writeText(color);
+                        setTimeout(() => setCode(false), 2000);
+                      }}
+                    />
+                    <p className={`copy-color-code ${hover ? 'hover' : ''}`}>Copiar código de color</p>
+                    <p className={`copied-color-code ${code ? 'active' : ''}`}>Código copiado</p>
+                    <h1>{color}</h1>
+                  </div>
+                ))
+              ) : (
+                <p>No se encontraron colores.</p>
+              )}
             </div>
           </div>
         </div>
