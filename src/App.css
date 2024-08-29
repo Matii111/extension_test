@@ -56,11 +56,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e1e1e;
+  background: #2A2C24
 }
 
 ::-webkit-scrollbar {
   width: 0.2rem;
+}
+
+.colorListContainer::-webkit-scrollbar-track {
+  background: #A89B9D;
+}
+
+.colorListContainer::-webkit-scrollbar {
+  height: 0.1rem;
 }
 
 /* CLASS FINDER */
@@ -164,12 +172,32 @@
 
 /* ORIGINAL COLOR */
 
+.colorListContainer {
+  display: flex;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  height: 2rem;
+  overflow-y: scroll;
+}
+
 .originalColor-container {
   display: flex;
   flex-direction: column;
   align-content: center;
   justify-content: center;
   align-items: center;
+}
+
+.color-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.color-box>h1 {
+  font-size: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .originalColor-container>div {

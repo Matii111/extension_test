@@ -140,6 +140,7 @@ function App() {
                     src={Dropdown}
                     className={`dropdown-button ${dropdown ? 'dropdown-active' : ''}`} />
                 </button>
+                <p>Opciones</p>
                 <div className={`dropdown-content-hidden  ${dropdown ? 'dropdown-content-active' : ''}`}>
 
                   <div className='options'>
@@ -188,10 +189,10 @@ function App() {
           <div className='originalColor-container'>
             <div className='originalColorTitle'>
               <hr />
-              <p>Color Original</p>
+              <p>Colores Originales</p>
               <hr />
             </div>
-            <div>
+            <div className='colorListContainer'>
               {ColorsList.length > 0 ? (
                 ColorsList.map((color, index) => (
                   <div key={index} className='color-box'>
