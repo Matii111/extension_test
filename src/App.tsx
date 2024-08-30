@@ -25,8 +25,8 @@ function App() {
   const [color, setColor] = useState('');
   const [classToSearch, setClassToSearch] = useState('');
   const [originalColor, setOriginalColor] = useState('');
-  const [hover, setHover] = useState(false);
-  const [code, setCode] = useState(false);
+  const [hoveredColorIndex, setHoveredColorIndex] = useState<number | null>(null); // Para saber qué color está "hovered"
+  const [copiedColorIndex, setCopiedColorIndex] = useState<number | null>(null); // Para saber qué color se ha copiado
   const [dropdown, setDropdown] = useState(false);
   const [option1Checked, setIsOption1Checked] = useState(false);
   const [option2Checked, setIsOption2Checked] = useState(false);
@@ -91,12 +91,10 @@ function App() {
             type='text'
             placeholder='Ingresar clase a buscar'
             value={classToSearch}
-            onChange={
-              (e) => {
-                setClassToSearch(e.target.value);
-                FindColor(e.target.value, color, setOriginalColor);
-              }
-            }
+            onChange={(e) => {
+              setClassToSearch(e.target.value);
+              FindColor(e.target.value, color, setOriginalColor);
+            }}
           />
           <div className='test-options'>
             <div className='color-selector'>
@@ -113,42 +111,36 @@ function App() {
             </div>
             <div className='color-modificator'>
               <div>
-                <button
-                  onClick={() => ResetColors(classToSearch)}
-                ><img src={RevertIcon} />
+                <button onClick={() => ResetColors(classToSearch)}>
+                  <img src={RevertIcon} />
                 </button>
                 <p>Limpiar</p>
               </div>
               <div>
-                <button
-                  onClick={() => ChangeText(classToSearch, color)}
-                ><img src={TextIcon} />
+                <button onClick={() => ChangeText(classToSearch, color)}>
+                  <img src={TextIcon} />
                 </button>
                 <p>Texto</p>
               </div>
               <div>
-                <button
-                  onClick={() => ChangeBackground(classToSearch, color)}
-                ><img src={BackgroundIcon} />
+                <button onClick={() => ChangeBackground(classToSearch, color)}>
+                  <img src={BackgroundIcon} />
                 </button>
                 <p>Fondo</p>
               </div>
               <div>
-                <button
-                  onClick={() => setDropdown((prevState) => !prevState)}
-                ><img
+                <button onClick={() => setDropdown((prevState) => !prevState)}>
+                  <img
                     src={Dropdown}
-                    className={`dropdown-button ${dropdown ? 'dropdown-active' : ''}`} />
+                    className={`dropdown-button ${dropdown ? 'dropdown-active' : ''}`}
+                  />
                 </button>
                 <p>Opciones</p>
-                <div className={`dropdown-content-hidden  ${dropdown ? 'dropdown-content-active' : ''}`}>
-
+                <div className={`dropdown-content-hidden ${dropdown ? 'dropdown-content-active' : ''}`}>
                   <div className='options'>
                     <div className='options-boxes'>
                       <div>
-                        <p>
-                          Hover de clases
-                        </p>
+                        <p>Hover de clases</p>
                       </div>
                       <div>
                         <label className="switch">
@@ -159,15 +151,12 @@ function App() {
                           />
                           <span className="slider" />
                         </label>
-
                       </div>
                     </div>
                     <hr />
                     <div className='options-boxes'>
                       <div>
-                        <p>
-                          Copiar clase al clickear
-                        </p>
+                        <p>Copiar clase al clickear</p>
                       </div>
                       <div>
                         <label className="switch">
@@ -195,20 +184,24 @@ function App() {
             <div className='colorListContainer'>
               {ColorsList.length > 0 ? (
                 ColorsList.map((color, index) => (
-                  <div key={index} className='color-box'>
+                  <div className='color-box' key={index}>
                     <div
                       className='originalColor'
                       style={{ backgroundColor: color }}
-                      onMouseEnter={() => setHover(true)}
-                      onMouseLeave={() => setHover(false)}
+                      onMouseEnter={() => setHoveredColorIndex(index)}
+                      onMouseLeave={() => setHoveredColorIndex(null)}
                       onClick={() => {
-                        setCode(true);
+                        setCopiedColorIndex(index);
                         navigator.clipboard.writeText(color);
-                        setTimeout(() => setCode(false), 2000);
+                        setTimeout(() => setCopiedColorIndex(null), 2000);
                       }}
                     />
-                    <p className={`copy-color-code ${hover ? 'hover' : ''}`}>Copiar código de color</p>
-                    <p className={`copied-color-code ${code ? 'active' : ''}`}>Código copiado</p>
+                    <p className={`copy-color-code ${hoveredColorIndex === index ? 'hover' : ''}`}>
+                      Copiar código de color
+                    </p>
+                    <p className={`copied-color-code ${copiedColorIndex === index ? 'active' : ''}`}>
+                      Código copiado
+                    </p>
                     <h1>{color}</h1>
                   </div>
                 ))
@@ -222,8 +215,5 @@ function App() {
     </>
   );
 }
-
-// TODO: Pasar código estilo de hover a archivo CSS
-// TODO: Refactorizar
 
 export default App;
