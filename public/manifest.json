@@ -1,15 +1,21 @@
 {
     "manifest_version": 3,
-    "version": "1.0.0",
-    "name": "extension-vite",
-    "action":{
-        "default_popup":"index.html"
+    "version": "1.0.1",
+    "name": "Color tester",
+    "description": "An add-on for color testing in apps under development. Easily copy and check different styles without using Ctrl+Shift+I.",
+    "icons": {
+        "16": "icons/16x16.png",
+        "48": "icons/48x48.png",
+        "128": "icons/128x128.png"
     },
-    "permissions":[
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": [
         "scripting",
         "storage"
     ],
-    "host_permissions":[
+    "host_permissions": [
         "http://*/*",
         "https://*/*"
     ]
