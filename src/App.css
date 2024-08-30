@@ -180,6 +180,10 @@
   overflow-y: scroll;
 }
 
+.non-color {
+  padding-right: 1rem;
+}
+
 .originalColor-container {
   display: flex;
   flex-direction: column;

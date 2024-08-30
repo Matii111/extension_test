@@ -206,7 +206,7 @@ function App() {
                   </div>
                 ))
               ) : (
-                <p>No se encontraron colores.</p>
+                <p className='non-color'>No se encontraron colores.</p>
               )}
             </div>
           </div>
