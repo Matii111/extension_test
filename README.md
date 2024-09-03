@@ -21,9 +21,16 @@ Chrome extension to test hex colors on specific css classes.
 - **Options**
   - Enable/disable class hover on cursor.
   - Enable/disable copy class on click.
+## Demo
 
 <div align='center'>
-  <img style='height:20rem;' src='https://github.com/user-attachments/assets/a51ecbb2-cdf8-4f32-bc43-463ff1360413'/>
-  <img style='height:20rem;' src='https://github.com/user-attachments/assets/49ac48f0-bc10-4810-8717-878498c8fe0f'/>
-  <img style='height:20rem;' src='https://github.com/user-attachments/assets/04c15159-ef5e-4a67-a0b9-71b2be10a699'/>  
+  <img src='https://github.com/user-attachments/assets/af1cc75b-bbe7-4b09-a3f2-bf6e4c96a893'/>
+  <img src='https://github.com/user-attachments/assets/7ff735ed-015a-4685-bb07-cbdea94eb1d6'/>
 </div>
+
+# How to install
+```
+npm install
+npm run build
+```
+Use build folder to load to chrome extensions.
